@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png" />
         <MapBox msg="Welcome to Your Vue.js App" />
     </div>
 </template>
@@ -17,6 +16,13 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~leaflet.markercluster/dist/MarkerCluster.css';
+@import '~leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+body {
+    margin: 0;
+}
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
