@@ -8,7 +8,7 @@
             style="height: 600px; width: 100vw"
         >
             <l-tile-layer :url="url" :attribution="attribution" />
-            <v-marker-cluster>
+            <v-marker-cluster :options="{spiderfyOnMaxZoom: true, disableClusteringAtZoom: 13, maxClusterRadius: 60}">
                 <l-marker
                     v-for="(marker, index) in markers"
                     :key="index"
@@ -25,7 +25,9 @@
                         <div class="marker-phone">
                             tel.: <a :href="`tel:${marker.phone}`">{{ marker.phone }}</a>
                         </div>
-                        <a class="marker-nav" :href="`https://www.google.com/maps/dir//${marker.lat},${marker.lng}`" target="_blank">Nawiguj</a>
+                        <a class="marker-nav"
+                           :href="`https://www.google.com/maps/dir//${marker.lat},${marker.lng}`"
+                           target="_blank">Nawiguj</a>
                     </l-popup>
                 </l-marker>
             </v-marker-cluster>
@@ -46,7 +48,10 @@
         <button type="button" @click="searchLocation(formData.postalCode, formData.city)">Szukaj</button>
         <hr>
         <div v-if="results.length">
-            <div v-for="(location, index) in results" :key="index" @click="centerOnLocation(location.point.coordinates)" style="cursor: pointer">
+            <div v-for="(location, index) in results"
+                 :key="index"
+                 @click="centerOnLocation(location.point.coordinates)"
+                 style="cursor: pointer">
                 {{ index + 1 }}. {{ location.address.locality }}, powiat: {{ location.address.adminDistrict2 }}, woj.: {{ location.address.adminDistrict }}
             </div>
         </div>
@@ -54,11 +59,13 @@
 </template>
 
 <script>
-import { LMap, LMarker, LPopup, LIcon, LTileLayer } from 'vue2-leaflet';
+import { geoJson, latLngBounds } from 'leaflet';
+import { LIcon, LMap, LMarker, LPopup, LTileLayer } from 'vue2-leaflet';
+import leafletKnn from 'leaflet-knn';
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
 import { markers } from '@/assets/markers';
-import { mask } from 'vue-the-mask'
-import axios from 'axios'
+import { mask } from 'vue-the-mask';
+import axios from 'axios';
 
 export default {
     name: 'MapBox',
@@ -86,31 +93,49 @@ export default {
             url: 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=wAfXyhTfSTvxebJ4AAAe',
             markers: markers,
             results: [],
-            attribution:
-                '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
         };
+    },
+
+    computed: {
+        getGeoJSONData() {
+            const points = [];
+            markers.forEach((element) => {
+                points.push({
+                    type: "Point",
+                    coordinates: [element.lat, element.lng],
+                });
+            });
+
+            return geoJson(points);
+        }
     },
 
     methods: {
         async searchLocation(postalCode, city) {
             if (postalCode || city) {
                 this.pickedLocation = [];
-                axios.get(`https://dev.virtualearth.net/REST/v1/Locations?countryRegion=PL${city ? `&locality=${city}` : ''}${postalCode ? `&postalCode=${postalCode}` : ''}&includeNeighborhood=0&maxResults=10&key=ArHNDlIpMt7aDoUFGXfHnThrf-M0m6-863pnM-7nBJJImEVH4VzQ74j2gXx2B17u`)
+                axios.get(`https://dev.virtualearth.net/REST/v1/Locations?countryRegion=PL${ city ? `&locality=${ city }` : '' }${ postalCode ? `&postalCode=${ postalCode }` : '' }&includeNeighborhood=0&maxResults=10&key=ArHNDlIpMt7aDoUFGXfHnThrf-M0m6-863pnM-7nBJJImEVH4VzQ74j2gXx2B17u`)
                     .then(response => {
                         console.log(response.data.resourceSets[0].resources);
                         this.results = response.data.resourceSets[0].resources;
                         if (this.results.length === 1) {
                             this.centerOnLocation(this.results[0].point.coordinates);
                         }
-                    })
+                    });
             }
         },
 
         centerOnLocation(latLng) {
             this.pickedLocation = latLng;
-            this.$refs.map.mapObject.flyTo(latLng, 11);
-        }
-    }
+            const closest = leafletKnn(this.getGeoJSONData).nearest(latLng, 2);
+            this.$refs.map.mapObject.flyToBounds(latLngBounds([latLng, this.getKnnLatLng(closest[0]), this.getKnnLatLng(closest[1])]), {padding: [60, 60], maxZoom: 15});
+        },
+
+        getKnnLatLng(pointObj) {
+            return [pointObj.lon, pointObj.lat]
+        },
+    },
 };
 </script>
 
@@ -153,12 +178,26 @@ a.marker-nav {
 }
 
 @keyframes bounce {
-    0%   { transform: scale(1,1)      translateY(0); }
-    10%  { transform: scale(1.1,.9)   translateY(0); }
-    30%  { transform: scale(.9,1.1)   translateY(-15px); }
-    50%  { transform: scale(1.05,.95) translateY(0); }
-    57%  { transform: scale(1,1)      translateY(-3px); }
-    64%  { transform: scale(1,1)      translateY(0); }
-    100% { transform: scale(1,1)      translateY(0); }
+    0% {
+        transform: scale(1, 1) translateY(0);
+    }
+    10% {
+        transform: scale(1.1, .9) translateY(0);
+    }
+    30% {
+        transform: scale(.9, 1.1) translateY(-15px);
+    }
+    50% {
+        transform: scale(1.05, .95) translateY(0);
+    }
+    57% {
+        transform: scale(1, 1) translateY(-3px);
+    }
+    64% {
+        transform: scale(1, 1) translateY(0);
+    }
+    100% {
+        transform: scale(1, 1) translateY(0);
+    }
 }
 </style>

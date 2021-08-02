@@ -5737,6 +5737,13 @@
     "chalk" "^2.3.0"
     "shell-quote" "^1.6.1"
 
+"leaflet-knn@^0.1.0":
+  "integrity" "sha1-V9D6B7A7P5ltHwxLc3vnKN9S0JU="
+  "resolved" "https://registry.npmjs.org/leaflet-knn/-/leaflet-knn-0.1.0.tgz"
+  "version" "0.1.0"
+  dependencies:
+    "sphere-knn" "~1.2.1"
+
 "leaflet.markercluster@^1.4.1":
   "integrity" "sha512-Fvf/cq4o806mJL50n+fZW9+QALDDLPvt7vuAjlD2vfnxx3srMDs2vWINJze4nKYJYRY45OC6tM/669C3pLwMCA=="
   "resolved" "https://registry.npmjs.org/leaflet.markercluster/-/leaflet.markercluster-1.5.0.tgz"
@@ -8494,6 +8501,11 @@
     "http-deceiver" "^1.2.7"
     "select-hose" "^2.0.0"
     "spdy-transport" "^3.0.0"
+
+"sphere-knn@~1.2.1":
+  "integrity" "sha1-cSWgKWFBHcYxiFfi0hbla37MvBw="
+  "resolved" "https://registry.npmjs.org/sphere-knn/-/sphere-knn-1.2.1.tgz"
+  "version" "1.2.1"
 
 "split-string@^3.0.1", "split-string@^3.0.2":
   "integrity" "sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw=="
