@@ -19,13 +19,12 @@ if (isset($_GET['token'])) {
 if (!$captcha) {
     print_r('error:no_captcha');
 } else {
+    // Yes I know, but it is just dev key.
     $secret   = '6Lfk3tsbAAAAACTQ9GTqVI2QDkWQDZ88iz00U2Le';
     $response = file_get_contents(
         "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']
     );
     $response = json_decode($response);
-
-//     print_r($response);
 
     if ($response->success === false) {
         print_r('error:bad_captcha');
