@@ -1,0 +1,123 @@
+.mapbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+
+  .mapbox-form {
+    flex: 0 0 250px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    label {
+      display: block;
+      font-size: 25px;
+
+      input {
+        width: 100%;
+        background-color: transparent;
+        color: white;
+        border-radius: 15px;
+        border: 3px solid white;
+        box-shadow: 0 0 15px white;
+        height: 50px;
+        text-align: center;
+        font-size: 28px;
+        font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        outline: none;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, .4);
+        }
+      }
+    }
+
+    .search {
+      width: 100%;
+      margin-top: 15px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      border: 3px solid white;
+      box-shadow: 0 0 15px white;
+      background-color: #af2963;
+      height: 50px;
+      font-size: 28px;
+      outline: none;
+      color: white;
+      text-transform: uppercase;
+      transition-duration: .2s;
+      cursor: pointer;
+
+      &:hover {
+        background-color: white;
+        color: #af2963;
+      }
+    }
+
+    .my-location-button {
+      font-size: 22px;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+      display: block;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .map {
+    flex: 1;
+    min-width: 400px;
+    max-width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 580px;
+    max-height: 100vh;
+  }
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,109 @@
+@import '~leaflet.markercluster/dist/MarkerCluster.css';
+@import '~leaflet.markercluster/dist/MarkerCluster.Default.css';
+
+body {
+  margin: 0;
+  font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #ca5e96;
+  color: white;
+
+  .vue2leaflet-map * {
+    text-transform: none;
+  }
+
+  .leaflet-marker-icon {
+    color: black;
+  }
+
+  img {
+    pointer-events: none;
+  }
+}
+
+.app-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  & > div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    & >.container {
+      width: 100%;
+      max-width: 1400px;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.header-container {
+  text-align: right;
+  padding: 20px;
+  background: linear-gradient(#ca5e96, #ae3264);
+  box-sizing: border-box;
+}
+
+.content-container {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: center;
+
+  .page-title {
+    width: 100%;
+    display: flex;
+    text-align: right;
+    position: relative;
+    justify-content: flex-end;
+    font-size: 40px;
+    margin: 10px 0 30px 0;
+
+    img {
+      position: relative;
+      top: 10px;
+    }
+
+    .page-title-image {
+      position: absolute;
+      left: 0;
+      top: -180px;
+      z-index: 1002;
+
+      img {
+        height: 380px;
+      }
+    }
+  }
+
+  .map-section .map-section-tips a {
+    color: white;
+  }
+}
+
+.footer-container {
+  font-weight: 300;
+  text-transform: none;
+  text-align: center;
+  background: linear-gradient(#ae3264, #ca5e96);
+  padding: 20px;
+  box-sizing: border-box;
+
+  a {
+    color: white;
+    text-decoration: underline;
+    font-size: 22px;
+
+    &:hover {
+      color: #f5f5f5;
+      text-decoration: underline;
+    }
+  }
+}
