@@ -3,10 +3,10 @@
 
 body {
   margin: 0;
-  font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+  font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   background-color: #ca5e96;
   color: white;
@@ -36,7 +36,7 @@ body {
     align-items: center;
     flex-direction: column;
 
-    & >.container {
+    & > .container {
       width: 100%;
       max-width: 1400px;
       padding: 0 15px;
@@ -64,6 +64,7 @@ body {
     position: relative;
     justify-content: flex-end;
     font-size: 40px;
+    line-height: 54px;
     margin: 10px 0 30px 0;
 
     img {
@@ -83,8 +84,22 @@ body {
     }
   }
 
-  .map-section .map-section-tips a {
-    color: white;
+  .map-section .map-section-tips {
+    color: #af2963;
+    background-color: white;
+    padding: 15px;
+    border-radius: 20px;
+    font-size: 19px;
+    height: auto;
+    transition: .2s;
+
+    & a {
+      color: #af2963;
+    }
+
+    div:nth-child(2) {
+      margin-top: 15px;
+    }
   }
 }
 
@@ -99,11 +114,25 @@ body {
   a {
     color: white;
     text-decoration: underline;
-    font-size: 22px;
+    font-size: 20px;
 
     &:hover {
       color: #f5f5f5;
       text-decoration: underline;
     }
+  }
+}
+
+.vue-notification-template {
+  .notification-title {
+    font-weight: 600;
+    font-size: 19px;
+    text-transform: none;
+  }
+
+  .notification-content {
+    font-weight: 300;
+    font-size: 19px;
+    text-transform: none;
   }
 }

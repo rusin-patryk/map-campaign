@@ -2,17 +2,17 @@
     <div id="app" class="app-wrapper">
         <div class="header-container">
             <div class="container">
-                <img draggable="false" src="@/assets/logo.png" alt="logo" style="height: 130px">
+                <img draggable="false" src="@/assets/images/logo.png" alt="logo" style="height: 130px">
             </div>
         </div>
         <div class="content-container">
             <div class="container">
                 <div class="page-title">
                     <div class="page-title-image">
-                        <img src="@/assets/kontener.png" alt="biedronka">
+                        <img src="@/assets/images/kontener.png" alt="biedronka">
                     </div>
                     <div>
-                        Wyszukaj najbliższy sklep <img src="@/assets/biedronka.png" alt="biedronka"><br>
+                        Wyszukaj najbliższy sklep <img src="@/assets/images/biedronka.png" alt="biedronka"><br>
                         z naszym kontenerem<br>
                         i oddaj ubrania w których już nie chodzisz
                     </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="footer-container">
             <div class="container">
-                <a href="/Polityka_prywatnosci-cookies_oddajubrania.pl.pdf" target="_blank">Polityka prywatności oraz pliki cookies</a>
+                <a href="/Polityka_prywatnosci-cookies_oddajubrania.pl.pdf" target="_blank">Polityka prywatności</a>
             </div>
         </div>
     </div>
@@ -61,6 +61,12 @@ export default {
         }
     },
 
+    mounted() {
+        window.onbeforeunload = function(){
+            this.removeCookies();
+        };
+    },
+
     methods: {
         getPickedLocation(data) {
             this.pickedLocation = data;
@@ -68,8 +74,23 @@ export default {
 
         getClosestPoint(data) {
             this.closestPoint = data;
+        },
+
+        removeCookies() {
+            const cookies = document.cookie.split(";");
+
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i];
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
         }
-    }
+    },
+
+    beforeDestroy() {
+        this.removeCookies();
+    },
 };
 </script>
 

@@ -12,7 +12,7 @@
 
     label {
       display: block;
-      font-size: 25px;
+      font-size: 26px;
 
       input {
         width: 100%;
@@ -21,13 +21,15 @@
         border-radius: 15px;
         border: 3px solid white;
         box-shadow: 0 0 15px white;
-        height: 50px;
+        box-sizing: border-box;
+        height: 58px;
         text-align: center;
-        font-size: 28px;
-        font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+        font-size: 36px;
+        font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
         font-weight: bold;
         outline: none;
-        margin-bottom: 15px;
+        margin-top: 2px;
+        margin-bottom: 18px;
         text-transform: uppercase;
 
         &::placeholder {
@@ -41,13 +43,13 @@
       margin-top: 15px;
       margin-bottom: 25px;
       border-radius: 15px;
-      font-family: "myriad-pro-condensed", Helvetica, Arial, sans-serif;
+      font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
       font-weight: 700;
       border: 3px solid white;
       box-shadow: 0 0 15px white;
       background-color: #af2963;
       height: 58px;
-      font-size: 28px;
+      font-size: 36px;
       outline: none;
       color: white;
       text-transform: uppercase;
@@ -61,7 +63,7 @@
     }
 
     .my-location-button {
-      font-size: 22px;
+      font-size: 26px;
       cursor: pointer;
       text-align: center;
       width: 100%;
