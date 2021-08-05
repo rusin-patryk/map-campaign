@@ -38,7 +38,7 @@
                 </div>
             </l-popup>
             <l-icon :icon-size="[64, 64]" :icon-anchor="[32, 60]" className="picked-location">
-                <img alt="Jesteś tu" title="Znaleziona lokalizacja" src="./../assets/marker-icon-big.png">
+                <img alt="Jesteś tu" title="Znaleziona lokalizacja" src="../assets/images/marker-icon-big.png">
             </l-icon>
         </l-marker>
         <l-geo-json :geojson="geojson" :visible="geojsonVisible"></l-geo-json>

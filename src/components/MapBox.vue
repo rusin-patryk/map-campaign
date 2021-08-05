@@ -15,7 +15,7 @@
             <span class="my-location-button" @click="getUserLocation">Użyj mojej lokalizacji</span>
             <LocationPicker :locations="locations" @pickLocation="centerOnLocation" @close="closePicker" />
         </div>
-        <div class="map">
+        <div class="map" id="map-anchor">
             <div v-if="!token" class="lds-ring"><div></div><div></div><div></div><div></div></div>
             <LeafletMap
                 v-if="token"
@@ -29,10 +29,12 @@
                 :fly-to-obj="flyToObj"
             />
         </div>
+        <notifications position="bottom left" width="340px" />
     </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import { geoJson, latLngBounds } from 'leaflet';
 import LeafletMap from '@/components/LeafletMap';
 import LocationPicker from '@/components/LocationPicker';
@@ -106,17 +108,47 @@ export default {
             if (postalCode || city) {
                 let requestUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
                 if (postalCode) {
+                    if (postalCode.length !== 6) {
+                        Vue.notify({
+                            type: 'error',
+                            title: 'Błąd!',
+                            text: 'Wprowadź poprawny kod pocztowy.'
+                        });
+                        return;
+                    }
                     requestUrl += postalCode.replace(' ', '') + '.json?country=PL&types=postcode&limit=10&' + this.token;
                 } else if (city) {
+                    if (!city.length > 2) {
+                        Vue.notify({
+                            type: 'error',
+                            title: 'Błąd!',
+                            text: 'Wprowadź poprawną miejscowość.'
+                        });
+                        return;
+                    }
                     requestUrl += city.replace(' ', '%20') + '.json?country=PL&language=pl&&types=place&limit=10&' + this.token;
                 }
                 this.pickedLocation = [];
                 axios.get(requestUrl)
                     .then(response => {
-                        this.locations = response.data.features;
-                        if (this.locations.length === 1) {
-                            this.centerOnLocation(this.locations[0]);
+                        if (!response.data.features.length) {
+                            Vue.notify({
+                                type: 'error',
+                                title: 'Błąd!',
+                                text: 'Nie udało się znaleźć wprowadzonej lokalizacji.'
+                            });
+                        } else {
+                            Vue.notify({
+                                type: 'success',
+                                title: 'OK!',
+                                text: 'Znaleźliśmy lokalizację.'
+                            });
+                            this.locations = response.data.features;
+                            if (this.locations.length === 1) {
+                                this.centerOnLocation(this.locations[0]);
+                            }
                         }
+                        window.location.href = '#map-anchor';
                     });
             }
         },
@@ -124,9 +156,19 @@ export default {
         getUserLocation() {
             navigator.geolocation.getCurrentPosition((location) => {
                 this.getAddress([location.coords.longitude, location.coords.latitude]);
+                Vue.notify({
+                    type: 'success',
+                    title: 'OK!',
+                    text: 'Znaleźliśmy lokalizację.'
+                });
             }, () => {
-                alert('Błąd! Nie udało się pobrać lokalizacji.');
+                Vue.notify({
+                    type: 'error',
+                    title: 'Błąd!',
+                    text: 'Nie udało się pobrać lokalizacji.'
+                });
             }, {enableHighAccuracy: true});
+            window.location.href = '#map-anchor';
         },
 
         centerOnLocation(location) {
@@ -193,17 +235,6 @@ export default {
         closePicker() {
             this.locations = [];
         },
-    },
-
-    beforeDestroy() {
-        const cookies = document.cookie.split(";");
-
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i];
-            const eqPos = cookie.indexOf("=");
-            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
     },
 };
 </script>
