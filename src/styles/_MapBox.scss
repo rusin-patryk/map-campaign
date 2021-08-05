@@ -24,13 +24,13 @@
         box-sizing: border-box;
         height: 58px;
         text-align: center;
-        font-size: 36px;
+        font-size: 35px;
         font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
         font-weight: bold;
         outline: none;
         margin-top: 2px;
         margin-bottom: 18px;
-        text-transform: uppercase;
+        text-transform: none;
 
         &::placeholder {
           color: rgba(255, 255, 255, .4);

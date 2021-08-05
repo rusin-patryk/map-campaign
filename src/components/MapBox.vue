@@ -150,6 +150,12 @@ export default {
                         }
                         window.location.href = '#map-anchor';
                     });
+            } else {
+                Vue.notify({
+                    type: 'warn',
+                    title: 'Błąd!',
+                    text: 'Nie wypełniono formularza.'
+                });
             }
         },
 
