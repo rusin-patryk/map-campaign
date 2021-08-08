@@ -8,8 +8,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-weight: 600;
   text-transform: uppercase;
-  background-color: #ca5e96;
+  background-color: #D95497;
   color: white;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 
   .vue2leaflet-map * {
     text-transform: none;
@@ -38,7 +43,7 @@ body {
 
     & > .container {
       width: 100%;
-      max-width: 1400px;
+      max-width: 1200px;
       padding: 0 15px;
       box-sizing: border-box;
     }
@@ -47,9 +52,13 @@ body {
 
 .header-container {
   text-align: right;
-  padding: 20px;
-  background: linear-gradient(#ca5e96, #ae3264);
+  height: 90px;
+  background: linear-gradient(#D95497, #BF1D66);
   box-sizing: border-box;
+
+  img {
+    display: none;
+  }
 }
 
 .content-container {
@@ -60,44 +69,67 @@ body {
   .page-title {
     width: 100%;
     display: flex;
-    text-align: right;
+    text-align: left;
     position: relative;
-    justify-content: flex-end;
-    font-size: 40px;
-    line-height: 54px;
-    margin: 10px 0 30px 0;
+    font-size: 30px;
+    line-height: 35px;
+    margin: 10px 0 20px 0;
+    justify-content: space-between;
+    padding-left: 280px;
+    box-sizing: border-box;
 
-    img {
-      position: relative;
-      top: 10px;
+    .page-title-content {
+      flex: 0 0 470px;
+
+      img {
+        position: relative;
+        top: 5px;
+        height: 54px;
+      }
     }
 
     .page-title-image {
       position: absolute;
       left: 0;
-      top: -180px;
+      top: -70px;
       z-index: 1002;
 
       img {
-        height: 380px;
+        width: 240px;
+      }
+    }
+
+    .page-title-logo {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+
+      img {
+        width: 150px;
+        position: relative;
+        top: 5px;
+        right: -16px;
       }
     }
   }
 
   .map-section .map-section-tips {
-    color: #af2963;
+    color: #BF1D66;
     background-color: white;
     padding: 15px;
     border-radius: 20px;
     font-size: 19px;
     height: auto;
     transition: .2s;
+    position: relative;
+    z-index: 10;
+    margin: 5px 0;
 
     & a {
-      color: #af2963;
+      color: #BF1D66;
     }
 
-    div:nth-child(2) {
+    div:nth-child(3) {
       margin-top: 15px;
     }
   }
@@ -107,7 +139,7 @@ body {
   font-weight: 300;
   text-transform: none;
   text-align: center;
-  background: linear-gradient(#ae3264, #ca5e96);
+  background: linear-gradient(#BF1D66, #D95497);
   padding: 20px;
   box-sizing: border-box;
 
@@ -134,5 +166,83 @@ body {
     font-weight: 300;
     font-size: 19px;
     text-transform: none;
+  }
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid white;
+  position: absolute;
+  right: 17px;
+  top: -11px;
+}
+
+@media (max-width: 930px) {
+  .header-container {
+    height: 120px;
+    padding-top: 10px;
+
+    img {
+      display: inline-block;
+    }
+  }
+
+  .page-title-logo {
+    display: none !important;
+  }
+
+  .page-title-content {
+    text-align: center;
+
+    span {
+      height: 36px;
+      display: inline-block;
+      padding-right: 98px;
+      position: relative;
+
+      img {
+        height: 46px !important;
+        position: absolute !important;
+        top: unset !important;
+        bottom: 0;
+      }
+    }
+  }
+
+  .page-title {
+    min-height: 220px;
+    padding-left: 40% !important;
+
+    .page-title-image {
+      width: 40% !important;
+      top: -130px !important;
+
+      img {
+        width: 100% !important;
+        max-width: 280px;
+      }
+    }
+
+    .page-title-content {
+      flex: 0 0 100% !important;
+    }
+  }
+}
+
+@media (max-width: 570px) {
+  .page-title {
+    min-height: 150px !important;
+
+    .page-title-image {
+      top: -80px !important;
+    }
+
+    .page-title-content {
+      font-size: 20px;
+      line-height: 28px;
+    }
   }
 }

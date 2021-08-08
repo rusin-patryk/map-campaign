@@ -5,7 +5,10 @@
         :min-zoom="6"
         :max-zoom="17"
         :center="center"
-        style="height: 580px; max-height: 100vh; width: 100%"
+        style="height: 500px; max-height: 70vh; width: 100%"
+        :dragging="pc"
+        :tap="pc"
+        :options="{dragging: pc, tap: pc}"
     >
         <l-tile-layer :url="getTilesUrl" :attribution="attribution" :options="{tileSize: 512, zoomOffset: -1}" />
         <v-marker-cluster :options="{spiderfyOnMaxZoom: true, disableClusteringAtZoom: 13, maxClusterRadius: 60}">
@@ -70,6 +73,7 @@ export default {
         geojsonVisible: Boolean,
         token: String,
         flyToObj: Object,
+        pc: Boolean,
     },
     data() {
         return {

@@ -1,18 +1,19 @@
 .mapbox-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 20px;
 
   .mapbox-form {
-    flex: 0 0 250px;
+    flex: 0 0 260px;
     text-align: left;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
+    padding: 10px 0;
 
     label {
       display: block;
-      font-size: 26px;
+      font-size: 28px;
 
       input {
         width: 100%;
@@ -22,14 +23,14 @@
         border: 3px solid white;
         box-shadow: 0 0 15px white;
         box-sizing: border-box;
-        height: 58px;
+        height: 64px;
         text-align: center;
-        font-size: 35px;
+        font-size: 36px;
         font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
         font-weight: bold;
         outline: none;
         margin-top: 2px;
-        margin-bottom: 18px;
+        margin-bottom: 15px;
         text-transform: none;
 
         &::placeholder {
@@ -40,15 +41,15 @@
 
     .search {
       width: 100%;
-      margin-top: 15px;
-      margin-bottom: 25px;
+      margin-top: 3px;
+      margin-bottom: 12px;
       border-radius: 15px;
       font-family: 'Myriad Pro', Helvetica, Arial, sans-serif;
       font-weight: 700;
       border: 3px solid white;
       box-shadow: 0 0 15px white;
       background-color: #af2963;
-      height: 58px;
+      height: 64px;
       font-size: 36px;
       outline: none;
       color: white;
@@ -77,14 +78,37 @@
 
   .map {
     flex: 1;
-    min-width: 400px;
     max-width: 100%;
     margin-bottom: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 580px;
-    max-height: 100vh;
+    height: 500px;
+    max-height: 70vh;
+    position: relative;
+    z-index: 10;
+    padding-top: 10px;
+
+    &.swiping::after {
+      content: 'Użyj dwóch palców do przesuwania mapy';
+      text-transform: none;
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      font-size: 24px;
+      font-weight: 300;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      pointer-events: none;
+    }
   }
 }
 
@@ -94,6 +118,7 @@
   width: 80px;
   height: 80px;
 }
+
 .lds-ring div {
   box-sizing: border-box;
   display: block;
@@ -106,20 +131,99 @@
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #fff transparent transparent transparent;
 }
+
 .lds-ring div:nth-child(1) {
   animation-delay: -0.45s;
 }
+
 .lds-ring div:nth-child(2) {
   animation-delay: -0.3s;
 }
+
 .lds-ring div:nth-child(3) {
   animation-delay: -0.15s;
 }
+
 @keyframes lds-ring {
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 930px) {
+  .mapbox-container {
+    flex-direction: column;
+
+    .mapbox-form {
+      flex: 0 0 100% !important;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+
+      label {
+        flex: 0 0 48%;
+        width: 48%;
+        font-size: 24px;
+        text-align: center;
+
+        input {
+          font-size: 24px;
+          height: 50px;
+          border-radius: 5px;
+          box-shadow: none;
+          border-width: 2px;
+        }
+      }
+
+      button {
+        display: block;
+        margin: 0 25%;
+        font-size: 24px !important;
+        height: 50px !important;
+        border-radius: 5px !important;
+        box-shadow: none !important;
+        border-width: 2px !important;
+      }
+
+      .my-location-button {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+@media (max-width: 570px) {
+  .mapbox-container {
+    .mapbox-form {
+      label {
+        font-size: 18px;
+
+        input {
+          font-size: 20px;
+          height: 40px;
+        }
+      }
+
+      button {
+        font-size: 20px !important;
+        height: 40px !important;
+      }
+
+      .my-location-button {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .map {
+    max-width: calc(100% + 20px) !important;
+    margin-left: -10px;
+    margin-right: -10px;
   }
 }
