@@ -129,6 +129,7 @@ export default {
                             type: 'error',
                             title: 'Błąd!',
                             text: 'Wprowadź poprawny kod pocztowy.',
+                            duration: 7000,
                         });
                         return;
                     }
@@ -139,6 +140,7 @@ export default {
                             type: 'error',
                             title: 'Błąd!',
                             text: 'Wprowadź poprawną miejscowość.',
+                            duration: 7000,
                         });
                         return;
                     }
@@ -152,12 +154,13 @@ export default {
                                 type: 'error',
                                 title: 'Błąd!',
                                 text: 'Nie udało się znaleźć wprowadzonej lokalizacji.',
+                                duration: 7000,
                             });
                         } else {
                             Vue.notify({
                                 type: 'success',
                                 title: 'OK!',
-                                text: 'Znaleźliśmy lokalizację.',
+                                text: 'Znaleźliśmy wyszukiwaną lokalizację.',
                             });
                             this.locations = response.data.features;
                             if (this.locations.length === 1) {
@@ -170,6 +173,7 @@ export default {
                     type: 'warn',
                     title: 'Błąd!',
                     text: 'Nie wypełniono formularza.',
+                    duration: 7000,
                 });
             }
         },
@@ -178,15 +182,17 @@ export default {
             navigator.geolocation.getCurrentPosition((location) => {
                 this.getAddress([location.coords.longitude, location.coords.latitude]);
                 Vue.notify({
-                    type: 'success',
-                    title: 'OK!',
-                    text: `Znaleźliśmy lokalizację ${ location.coords.accuracy < 200 ? 'z dużą dokładnością.' : ', lecz ze słabą dokładnością.' }`,
+                    type: `${location.coords.accuracy < 200 ? 'success' : 'warn'}`,
+                    title: `${location.coords.accuracy < 200 ? 'OK!' : 'OK, ale...'}`,
+                    text: `Znaleźliśmy ${ location.coords.accuracy < 200 ? 'Twoją dokładną lokalizację.' : 'niedokładną lokalizację - Twoja realna pozycja może być inna.' }`,
+                    duration: 7000,
                 });
             }, () => {
                 Vue.notify({
                     type: 'error',
                     title: 'Błąd!',
-                    text: 'Twoje urządzenie nie zezwoliło na udostępnienie lokalizacji. Użyj formularza.',
+                    text: 'Prawdopodobnie Twoje urządzenie nie zezwoliło na udostępnienie lokalizacji. Użyj formularza.',
+                    duration: 7000,
                 });
             }, {enableHighAccuracy: true});
         },
