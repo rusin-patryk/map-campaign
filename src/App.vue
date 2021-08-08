@@ -2,7 +2,7 @@
     <div id="app" class="app-wrapper">
         <div class="header-container">
             <div class="container">
-                <img draggable="false" src="@/assets/images/logo.png" alt="logo" style="height: 130px">
+                <img draggable="false" src="@/assets/images/logo.png" alt="logo" style="height: 90px">
             </div>
         </div>
         <div class="content-container">
@@ -11,17 +11,21 @@
                     <div class="page-title-image">
                         <img src="@/assets/images/kontener.png" alt="biedronka">
                     </div>
-                    <div>
-                        Wyszukaj najbliższy sklep <img src="@/assets/images/biedronka.png" alt="biedronka"><br>
-                        z naszym kontenerem<br>
-                        i oddaj ubrania w których już nie chodzisz
+                    <div class="page-title-content">
+                        Wyszukaj&nbsp;najbliższy <span style="white-space: nowrap">sklep&nbsp;<img src="@/assets/images/biedronka.png" alt="biedronka"></span><br>
+                        z&nbsp;naszym kontenerem<br>
+                        i&nbsp;oddaj&nbsp;ubrania w&nbsp;których&nbsp;już nie&nbsp;chodzisz
+                    </div>
+                    <div class="page-title-logo">
+                        <img draggable="false" src="@/assets/images/logo.png" alt="logo">
                     </div>
                 </div>
                 <div class="map-section">
                     <MapBox @pickedLocation="getPickedLocation" @closestPoint="getClosestPoint" />
                     <div class="map-section-tips">
+                        <div class="arrow-up"></div>
                         <div v-if="!pickedLocation && !closestPoint.name">
-                            Wyszukaj lokalizację poprzez formularz po lewej stronie lub użyj swojej lokalizacji, aby znaleźć najbliższe sklepy z naszym kontenerem.
+                            Wyszukaj lokalizację poprzez formularz lub użyj swojej lokalizacji, aby znaleźć najbliższe sklepy z naszym kontenerem.
                         </div>
                         <div v-if="pickedLocation">
                             {{ pickedLocation }}

@@ -10,13 +10,21 @@
                 <input v-model="formData.city" />
             </label>
 
-            <button class="search" type="button" @click="searchLocation(formData.postalCode, formData.city)">Szukaj</button>
+            <button class="search"
+                    type="button"
+                    @click="searchLocation(formData.postalCode, formData.city)">Znajdź na mapie
+            </button>
 
             <span class="my-location-button" @click="getUserLocation">Użyj mojej lokalizacji</span>
             <LocationPicker :locations="locations" @pickLocation="centerOnLocation" @close="closePicker" />
         </div>
-        <div class="map" id="map-anchor">
-            <div v-if="!token" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <div class="map" id="map-anchor" @touchstart="onTwoFingerDrag" @touchend="onTwoFingerDrag">
+            <div v-if="!token" class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
             <LeafletMap
                 v-if="token"
                 :zoom="zoom"
@@ -27,6 +35,7 @@
                 :token="token"
                 :geojson-visible="geojsonVisible"
                 :fly-to-obj="flyToObj"
+                :pc="pc"
             />
         </div>
         <notifications position="bottom left" width="340px" />
@@ -72,6 +81,7 @@ export default {
                     animate: false,
                 },
             },
+            pc: true,
         };
     },
 
@@ -103,6 +113,12 @@ export default {
         });
     },
 
+    mounted() {
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            this.pc = false;
+        }
+    },
+
     methods: {
         searchLocation(postalCode, city) {
             if (postalCode || city) {
@@ -112,7 +128,7 @@ export default {
                         Vue.notify({
                             type: 'error',
                             title: 'Błąd!',
-                            text: 'Wprowadź poprawny kod pocztowy.'
+                            text: 'Wprowadź poprawny kod pocztowy.',
                         });
                         return;
                     }
@@ -122,7 +138,7 @@ export default {
                         Vue.notify({
                             type: 'error',
                             title: 'Błąd!',
-                            text: 'Wprowadź poprawną miejscowość.'
+                            text: 'Wprowadź poprawną miejscowość.',
                         });
                         return;
                     }
@@ -135,26 +151,25 @@ export default {
                             Vue.notify({
                                 type: 'error',
                                 title: 'Błąd!',
-                                text: 'Nie udało się znaleźć wprowadzonej lokalizacji.'
+                                text: 'Nie udało się znaleźć wprowadzonej lokalizacji.',
                             });
                         } else {
                             Vue.notify({
                                 type: 'success',
                                 title: 'OK!',
-                                text: 'Znaleźliśmy lokalizację.'
+                                text: 'Znaleźliśmy lokalizację.',
                             });
                             this.locations = response.data.features;
                             if (this.locations.length === 1) {
                                 this.centerOnLocation(this.locations[0]);
                             }
                         }
-                        window.location.href = '#map-anchor';
                     });
             } else {
                 Vue.notify({
                     type: 'warn',
                     title: 'Błąd!',
-                    text: 'Nie wypełniono formularza.'
+                    text: 'Nie wypełniono formularza.',
                 });
             }
         },
@@ -165,16 +180,15 @@ export default {
                 Vue.notify({
                     type: 'success',
                     title: 'OK!',
-                    text: 'Znaleźliśmy lokalizację.'
+                    text: `Znaleźliśmy lokalizację ${ location.coords.accuracy < 200 ? 'z dużą dokładnością.' : ', lecz ze słabą dokładnością.' }`,
                 });
             }, () => {
                 Vue.notify({
                     type: 'error',
                     title: 'Błąd!',
-                    text: 'Nie udało się pobrać lokalizacji.'
+                    text: 'Twoje urządzenie nie zezwoliło na udostępnienie lokalizacji. Użyj formularza.',
                 });
             }, {enableHighAccuracy: true});
-            window.location.href = '#map-anchor';
         },
 
         centerOnLocation(location) {
@@ -189,7 +203,6 @@ export default {
                 this.flyToObj.bounds = latLngBounds([latLng, this.getKnnLatLng(closest[0]), this.getKnnLatLng(closest[1])]);
                 this.flyToObj.options.maxZoom = 14;
             }
-
             this.searchRoute(latLng, closest[0]);
             this.locations = [];
         },
@@ -202,6 +215,11 @@ export default {
                     this.geojson = response.data.routes[0].geometry;
                     this.geojsonVisible = true;
                     this.emitRoute(response.data.routes[0], closest);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        window.location.href = '#map-anchor';
+                    }, 100);
                 });
         },
 
@@ -240,6 +258,16 @@ export default {
 
         closePicker() {
             this.locations = [];
+        },
+
+        onTwoFingerDrag(e) {
+            if (e.type === 'touchstart' && e.touches.length === 1) {
+                e.currentTarget.classList.add('swiping');
+                this.pc = true;
+            } else {
+                e.currentTarget.classList.remove('swiping');
+                this.pc = false;
+            }
         },
     },
 };
