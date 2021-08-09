@@ -363,7 +363,7 @@ export default {
                 });
             } else if (tries < 10) {
                 setTimeout(() => {
-                    this.executeRecaptcha(captchaPublicKey, isProd, ++tries);
+                    this.executeRecaptcha(captchaPublicKey, ++tries);
                 }, 500);
             } else {
                 console.error('ReCaptcha execute error');
