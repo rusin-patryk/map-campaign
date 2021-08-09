@@ -1,6 +1,7 @@
 {
   "name": "map-campaign",
-  "version": "0.1.0",
+  "author": "NANO IT Patryk Rusin",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
