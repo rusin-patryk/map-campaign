@@ -46,10 +46,13 @@ if (!$captcha && !$get_public) {
     if ($response->success === false) {
         $return_value = array('data' => 'error:bad_captcha');
         print_r(json_encode($return_value));
-    } else if ($response->success==1 && $response->score > 0) {
+    } else if ($response->success==1 && $response->score >= 0.4) {
         $return_value = array('data' => $mapbox_token);
         print_r(json_encode($return_value));
-    }
+    } else {
+       $return_value = array('data' => 'error:bot');
+       print_r(json_encode($return_value));
+  }
 } else if ($get_public) {
     $return_value = array('data' => $public);
     print_r(json_encode($return_value));
