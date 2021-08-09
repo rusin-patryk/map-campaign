@@ -18,7 +18,17 @@
     <meta property="og:url" content="https://oddajubrania.pl/" />
     <link href="<%= BASE_URL %>favicon.ico" rel="icon">
     <title>OddajUbrania.pl - Oddaj ubrania, w których już nie chodzisz</title>
-    <script src="https://www.google.com/recaptcha/api.js?render=6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M"></script>
+    <script type="text/javascript">
+        const script = document.createElement('script');
+        let captchaPublicKey = '6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M';
+        if (window.location.href.indexOf('//www.oddajubrania.pl') > -1 || window.location.href.indexOf('//oddajubrania.pl') > -1) {
+            captchaPublicKey = '6LejjewbAAAAACSpMwxibodwycR7vFExC8dkNK5Y';
+        }
+        script.async = true;
+        script.type = 'text/javascript';
+        script.src = 'https://www.google.com/recaptcha/api.js?render=' + captchaPublicKey;
+        document.head.appendChild(script);
+    </script>
     <link rel="stylesheet" href="https://use.typekit.net/asb0cho.css">
     <link href="fonts/MyriadPro-SemiboldCond.woff2" as="font" type="font/woff2">
     <link href="fonts/MyriadPro-Light.woff2" as="font" type="font/woff2">

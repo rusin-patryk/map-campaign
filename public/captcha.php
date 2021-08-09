@@ -1,6 +1,4 @@
 <?php
-include('config.php');
-
     if (isset($_SERVER['HTTP_ORIGIN'])) {
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
         header('Access-Control-Allow-Credentials: true');
@@ -18,6 +16,7 @@ if (isset($_GET['token'])) {
     $captcha = false;
 }
 
+include('config.php');
 $url = '//' . $_SERVER['SERVER_NAME'];
 $secret = DEV_CAPTCHA_SECRET;
 $mapbox_token = DEV_MAPBOX_TOKEN;
