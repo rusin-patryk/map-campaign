@@ -107,11 +107,7 @@ export default {
     },
 
     created() {
-        if (window.location.href.indexOf('//www.oddajubrania.pl') > -1 || window.location.href.indexOf('//oddajubrania.pl') > -1) {
-            this.runRecaptcha('6LejjewbAAAAACSpMwxibodwycR7vFExC8dkNK5Y', true);
-        } else {
-            this.runRecaptcha('6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M', false);
-        }
+        this.runRecaptcha();
 
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             this.pc = false;
@@ -283,13 +279,77 @@ export default {
             }
         },
 
-        runRecaptcha(captchaPublicKey, isProd, tries = 0) {
+        runRecaptcha(tries = 0) {
+            axios.get(`${ window.location.origin }/captcha.php?public`)
+                .then((response) => {
+                    if (response.data.data && response.data.data.indexOf('error') === -1) {
+                        this.executeRecaptcha(response.data.data);
+                    } else if (tries < 3) {
+                        setTimeout(() => {
+                            this.runRecaptcha(++tries);
+                        }, 250)
+                    } else {
+                        console.error('ReCaptcha execute error');
+                        Vue.notify({
+                            type: 'error',
+                            title: 'Błąd!',
+                            text: 'Nie udało się załadować Google ReCaptcha. Spróbuj odświeżyć stronę.',
+                            duration: 100000,
+                        });
+                        this.error = true;
+                    }
+                })
+                .catch(() => {
+                    if (tries < 3) {
+                        setTimeout(() => {
+                            this.runRecaptcha(++tries);
+                        }, 250)
+                    } else {
+                        console.error('ReCaptcha execute error');
+                        Vue.notify({
+                            type: 'error',
+                            title: 'Błąd!',
+                            text: 'Nie udało się załadować Google ReCaptcha. Spróbuj odświeżyć stronę.',
+                            duration: 100000,
+                        });
+                        this.error = true;
+                    }
+                })
+        },
+
+        executeRecaptcha(captchaPublicKey, tries = 0) {
             if (window.grecaptcha) {
                 window.grecaptcha.ready(() => {
                     window.grecaptcha.execute(captchaPublicKey, {action: 'submit'}).then((token) => {
-                        axios.get(`https://${ isProd ? '' : 'stagging.' }oddajubrania.pl/captcha.php?token=${ token }`)
+                        axios.get(`${ window.location.origin }/captcha.php?token=${ token }`)
                             .then(response => {
-                                if (!response.data || response.data.split(':')[0] === 'error') {
+                                if (!response.data.data || response.data.data.split(':')[0] === 'error') {
+                                    if (tries < 10) {
+                                        setTimeout(() => {
+                                            this.executeRecaptcha(captchaPublicKey, ++tries);
+                                        }, 250);
+                                    } else {
+                                        console.error('ReCaptcha verification error');
+                                        Vue.notify({
+                                            type: 'error',
+                                            title: 'Błąd!',
+                                            text: 'Nie powiodła się weryfikacja Google ReCaptcha - mapa niedostępna. Spróbuj odświeżyć stronę.',
+                                            duration: 100000,
+                                        });
+                                        this.error = true;
+                                    }
+                                } else {
+                                    this.error = false;
+                                    this.token = 'access_token=' + response.data.data;
+                                }
+                            })
+                            .catch(() => {
+                                if (tries < 10) {
+                                    setTimeout(() => {
+                                        this.executeRecaptcha(captchaPublicKey, ++tries);
+                                    }, 500);
+                                } else {
+                                    console.error('ReCaptcha verification error');
                                     Vue.notify({
                                         type: 'error',
                                         title: 'Błąd!',
@@ -297,24 +357,13 @@ export default {
                                         duration: 100000,
                                     });
                                     this.error = true;
-                                } else {
-                                    this.token = response.data;
                                 }
-                            })
-                            .catch(() => {
-                                Vue.notify({
-                                    type: 'error',
-                                    title: 'Błąd!',
-                                    text: 'Nie powiodła się weryfikacja Google ReCaptcha - mapa niedostępna. Spróbuj odświeżyć stronę.',
-                                    duration: 100000,
-                                });
-                                this.error = true;
                             });
                     });
                 });
             } else if (tries < 10) {
                 setTimeout(() => {
-                    this.runRecaptcha(captchaPublicKey, isProd, ++tries);
+                    this.executeRecaptcha(captchaPublicKey, ++tries);
                 }, 500);
             } else {
                 console.error('ReCaptcha execute error');
@@ -324,6 +373,7 @@ export default {
                     text: 'Nie udało się załadować Google ReCaptcha. Spróbuj odświeżyć stronę.',
                     duration: 100000,
                 });
+                this.error = true;
             }
         }
     },
