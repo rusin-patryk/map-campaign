@@ -38,7 +38,12 @@
                 :pc="pc"
             />
             <div v-if="error">
-                Błąd: nie powiodła się weryfikacja Google ReCaptcha - mapa niedostępna. Spróbuj odświeżyć stronę.
+                <span v-if="typeof error === 'string'">
+                    {{ error }}
+                </span>
+                <span v-else>
+                    Błąd: nie powiodła się weryfikacja Google ReCaptcha - mapa niedostępna. Spróbuj odświeżyć stronę.
+                </span>
             </div>
         </div>
         <notifications position="bottom left" width="340px" />
@@ -323,7 +328,15 @@ export default {
                     window.grecaptcha.execute(captchaPublicKey, {action: 'submit'}).then((token) => {
                         axios.get(`${ window.location.origin }/captcha.php?token=${ token }`)
                             .then(response => {
-                                if (!response.data.data || response.data.data.split(':')[0] === 'error') {
+                                if (response.data.data === 'error:bot') {
+                                    this.error = 'Błąd: nie można było załadować mapy, ponieważ wykryto niestandardowe zachowanie Twojego urządzenia (wykryto spam lub robota). Jeśli jednak nie jesteś robotem, spróbuj odświeżyć stronę.';
+                                    Vue.notify({
+                                        type: 'error',
+                                        title: 'Błąd!',
+                                        text: 'Nie można było załadować mapy, ponieważ wykryto niestandardowe zachowanie Twojego urządzenia (wykryto spam lub robota). Jeśli jednak nie jesteś robotem, spróbuj odświeżyć stronę.',
+                                        duration: 100000,
+                                    });
+                                } else if (!response.data.data || response.data.data.split(':')[0] === 'error') {
                                     if (tries < 10) {
                                         setTimeout(() => {
                                             this.executeRecaptcha(captchaPublicKey, ++tries);
