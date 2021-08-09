@@ -7,12 +7,14 @@
     <meta property="og:locale" content="pl_PL" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OddajUbrania.pl - oddaj ubrania, w których już nie chodzisz" />
-    <meta property="og:description" content="Wyszukaj najbliśzy sklep Biedronka z naszym kontenerem i oddaj ubrania, w których już nie chodzisz" />
+    <meta property="og:description"
+          content="Wyszukaj najbliśzy sklep Biedronka z naszym kontenerem i oddaj ubrania, w których już nie chodzisz" />
     <meta property="og:site_name" content="OddajUbrania.pl" />
     <meta property="og:image" content="https://stagging.oddajubrania.pl/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="description" content="Wyszukaj najbliższy sklep Biedronka z naszym kontenerem i oddaj ubrania, w których już nie chodzisz">
+    <meta name="description"
+          content="Wyszukaj najbliższy sklep Biedronka z naszym kontenerem i oddaj ubrania, w których już nie chodzisz">
     <meta name="keywords" content="Vanish, Biedronka, Oddaj, Ubrania, Już nie chodzisz">
     <meta name="author" content="NANO IT Patryk Rusin">
     <meta property="og:url" content="https://oddajubrania.pl/" />
@@ -20,14 +22,35 @@
     <title>OddajUbrania.pl - Oddaj ubrania, w których już nie chodzisz</title>
     <script type="text/javascript">
         const script = document.createElement('script');
-        let captchaPublicKey = '6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M';
-        if (window.location.href.indexOf('//www.oddajubrania.pl') > -1 || window.location.href.indexOf('//oddajubrania.pl') > -1) {
-            captchaPublicKey = '6LejjewbAAAAACSpMwxibodwycR7vFExC8dkNK5Y';
-        }
         script.async = true;
         script.type = 'text/javascript';
-        script.src = 'https://www.google.com/recaptcha/api.js?render=' + captchaPublicKey;
-        document.head.appendChild(script);
+        getPublicKey();
+
+        function getPublicKey(tries = 0) {
+            fetch(window.location.origin + '/captcha.php?public', {headers: {'content-type': 'application/json'}})
+                .then((response) => response.json())
+                .then((responseData) => {
+                    if (responseData.data) {
+                        script.src = 'https://www.google.com/recaptcha/api.js?render=' + responseData.data;
+                        document.head.appendChild(script);
+                    } else if (tries < 3) {
+                        setTimeout(() => {
+                            getPublicKey(isProd, ++tries);
+                        }, 250);
+                    } else {
+                        console.error('ReCaptcha initial execute error');
+                    }
+                })
+                .catch(() => {
+                    if (tries < 3) {
+                        setTimeout(() => {
+                            getPublicKey(isProd, ++tries);
+                        }, 250);
+                    } else {
+                        console.error('ReCaptcha initial execute error');
+                    }
+                });
+        }
     </script>
     <link rel="stylesheet" href="https://use.typekit.net/asb0cho.css">
     <link href="fonts/MyriadPro-SemiboldCond.woff2" as="font" type="font/woff2">
@@ -35,14 +58,15 @@
     <style>
         @font-face {
             font-family: 'Myriad Pro';
-            src: url("/fonts/MyriadPro-SemiboldCond.woff2") format("woff2"),
-            url("/fonts/MyriadPro-SemiboldCond.woff") format("woff");
+            src: url('/fonts/MyriadPro-SemiboldCond.woff2') format('woff2'),
+            url('/fonts/MyriadPro-SemiboldCond.woff') format('woff');
             font-weight: 600;
         }
+
         @font-face {
             font-family: 'Myriad Pro';
-            src: url("/fonts/MyriadPro-Light.woff2") format("woff2"),
-            url("/fonts/MyriadPro-Light.woff") format("woff");
+            src: url('/fonts/MyriadPro-Light.woff2') format('woff2'),
+            url('/fonts/MyriadPro-Light.woff') format('woff');
             font-weight: 300;
         }
     </style>
