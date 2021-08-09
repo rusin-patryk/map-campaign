@@ -103,8 +103,13 @@ export default {
     },
 
     beforeCreate() {
+        let captchaPublicKey = '6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M';
+        if (window.location.href.indexOf('//www.oddajubrania.pl') > -1 || window.location.href.indexOf('//oddajubrania.pl') > -1) {
+            captchaPublicKey = '6LejjewbAAAAACSpMwxibodwycR7vFExC8dkNK5Y';
+        }
+
         window.grecaptcha.ready(() => {
-            window.grecaptcha.execute('6Lfk3tsbAAAAAC08lFSMnQL8ry4g1zSbz68HPu2M', {action: 'submit'}).then((token) => {
+            window.grecaptcha.execute(captchaPublicKey, {action: 'submit'}).then((token) => {
                 axios.get(`https://stagging.oddajubrania.pl/captcha.php?token=${ token }`)
                     .then(response => {
                         this.token = response.data;
