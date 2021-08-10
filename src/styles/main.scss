@@ -91,8 +91,9 @@ body {
     .page-title-image {
       position: absolute;
       left: 0;
-      top: -70px;
+      top: -80px;
       z-index: 10;
+      pointer-events: none;
 
       img {
         width: 240px;
@@ -180,6 +181,16 @@ body {
   top: -11px;
 }
 
+@media (max-width: 1366px) and (min-width: 931px) {
+  .page-title-image {
+    top: -90px !important;
+
+    img {
+      width: 220px !important;
+    }
+  }
+}
+
 @media (max-width: 930px) {
   .header-container {
     height: 120px;
@@ -222,7 +233,7 @@ body {
 
       img {
         width: 100% !important;
-        max-width: 280px;
+        max-width: 250px;
       }
     }
 
@@ -237,7 +248,10 @@ body {
     min-height: 150px !important;
 
     .page-title-image {
-      top: -80px !important;
+      top: -100px !important;
+      img {
+        max-width: 180px;
+      }
     }
 
     .page-title-content {
