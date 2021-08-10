@@ -66,7 +66,7 @@ export default {
     },
 
     mounted() {
-        window.onbeforeunload = function(){
+        window.onbeforeunload = function() {
             const cookies = document.cookie.split(";");
 
             for (let i = 0; i < cookies.length; i++) {

@@ -1,21 +1,24 @@
 <template>
     <div class="mapbox-container">
         <div class="mapbox-form">
+            <button class="search"
+                    type="button"
+                    @click="getUserLocation">Użyj mojej lokalizacji
+            </button>
             <label>
-                Podaj kod pocztowy
-                <input autofocus v-model="formData.postalCode" placeholder="XX-XXX" v-mask="'##-###'" />
+                lub podaj kod pocztowy
+                <input autofocus v-model="formData.postalCode" placeholder="XX-XXX" v-mask="'##-###'" @keyup.enter="searchLocation(formData.postalCode, formData.city)" />
             </label>
             <label>
                 lub nazwę miejscowości
-                <input v-model="formData.city" />
+                <input v-model="formData.city" @keyup.enter="searchLocation(formData.postalCode, formData.city)" />
             </label>
 
-            <button class="search"
+            <button class="search search-last"
                     type="button"
-                    @click="searchLocation(formData.postalCode, formData.city)">Znajdź na mapie
+                    @click="searchLocation(formData.postalCode, formData.city)" :disabled="loading">Znajdź na mapie
             </button>
 
-            <span class="my-location-button" @click="getUserLocation">Użyj mojej lokalizacji</span>
             <LocationPicker :locations="locations" @pickLocation="centerOnLocation" @close="closePicker" />
         </div>
         <div class="map" id="map-anchor" @touchstart="onTwoFingerDrag" @touchend="onTwoFingerDrag">
@@ -91,6 +94,7 @@ export default {
                 },
             },
             pc: true,
+            loading: false,
         };
     },
 
@@ -121,6 +125,21 @@ export default {
 
     methods: {
         searchLocation(postalCode, city) {
+            this.loading = true;
+            if (this.error) {
+                Vue.notify({
+                    type: 'error',
+                    title: 'Błąd!',
+                    text: 'Nie powiodła się weryfikacja Google ReCaptcha - mapa niedostępna. Spróbuj odświeżyć stronę.',
+                });
+                this.loading = false;
+                return;
+            }
+            if (!this.token) {
+                setTimeout(() => {
+                    this.searchLocation(postalCode, city);
+                }, 2000)
+            }
             if (postalCode || city) {
                 let requestUrl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
                 if (postalCode) {
@@ -131,37 +150,58 @@ export default {
                             text: 'Wprowadź poprawny kod pocztowy.',
                             duration: 7000,
                         });
+                        this.loading = false;
+                        return;
+                    }
+                    if (postalCode === '00-001') {
+                        Vue.notify({
+                            type: 'success',
+                            title: 'OK!',
+                            text: 'Znaleźliśmy wyszukiwaną lokalizację.',
+                        });
+                        this.centerOnLocation({
+                            center: [21.01030, 52.23539],
+                            place_name: '00-100, Warszawa, Województwo mazowieckie',
+                            place_type: ['postcode']
+                        });
+                        this.loading = false;
                         return;
                     }
                     requestUrl += postalCode.replace(' ', '') + '.json?country=PL&types=postcode&limit=10&' + this.token;
                 } else if (city) {
-                    if (!city.length > 2) {
+                    if (city.length <= 2 || city.length > 80) {
                         Vue.notify({
                             type: 'error',
                             title: 'Błąd!',
                             text: 'Wprowadź poprawną miejscowość.',
                             duration: 7000,
                         });
+                        this.loading = false;
                         return;
                     }
                     requestUrl += city.replace(' ', '%20') + '.json?country=PL&language=pl&&types=place&limit=10&' + this.token;
                 }
-                this.pickedLocation = [];
                 axios.get(requestUrl)
                     .then(response => {
                         if (!response.data.features.length) {
-                            Vue.notify({
-                                type: 'error',
-                                title: 'Błąd!',
-                                text: 'Nie udało się znaleźć wprowadzonej lokalizacji.',
-                                duration: 7000,
-                            });
+                            if (postalCode && city) {
+                                this.searchLocation('', city);
+                            } else {
+                                Vue.notify({
+                                    type: 'error',
+                                    title: 'Błąd!',
+                                    text: 'Nie udało się znaleźć wprowadzonej lokalizacji. Sprawdź poprawność wpisanych danych.',
+                                    duration: 7000,
+                                });
+                                this.loading = false;
+                            }
                         } else {
                             Vue.notify({
                                 type: 'success',
                                 title: 'OK!',
                                 text: 'Znaleźliśmy wyszukiwaną lokalizację.',
                             });
+                            this.loading = false;
                             this.locations = response.data.features;
                             if (this.locations.length === 1) {
                                 this.centerOnLocation(this.locations[0]);
@@ -172,9 +212,10 @@ export default {
                         Vue.notify({
                             type: 'error',
                             title: 'Błąd!',
-                            text: 'Nie udało się znaleźć wprowadzonej lokalizacji.',
+                            text: 'Nie udało się znaleźć wprowadzonej lokalizacji. Sprawdź poprawność wpisanych danych.',
                             duration: 7000,
                         });
+                        this.loading = false;
                     });
             } else {
                 Vue.notify({
@@ -183,6 +224,7 @@ export default {
                     text: 'Nie wypełniono formularza.',
                     duration: 7000,
                 });
+                this.loading = false;
             }
         },
 
@@ -213,21 +255,22 @@ export default {
             if (location.place_type[0] === 'postcode' || location.place_type[0] === 'geolocation') {
                 this.flyToObj.bounds = latLngBounds(latLng, this.getKnnLatLng(closest[0]));
                 this.flyToObj.options.maxZoom = 15;
+                this.searchRoute(latLng, closest[0], true);
             } else {
                 this.flyToObj.bounds = latLngBounds([latLng, this.getKnnLatLng(closest[0]), this.getKnnLatLng(closest[1])]);
                 this.flyToObj.options.maxZoom = 14;
+                this.searchRoute(latLng, closest[0], false);
             }
-            this.searchRoute(latLng, closest[0]);
             this.locations = [];
         },
 
-        searchRoute(latLng, closest) {
+        searchRoute(latLng, closest, showRoute = true) {
             const requestUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${ latLng[1].toFixed(4) },${ latLng[0].toFixed(4) };${ this.getKnnLatLng(closest)[1] },${ this.getKnnLatLng(closest)[0] }?geometries=geojson&access_token=pk.eyJ1IjoibmFub2l0IiwiYSI6ImNrcnZ2cW42ejBhZXQybm44ZXdnenRzbGsifQ.29MhI2aCgJMB93atv6eGtQ`;
             this.geojsonVisible = false;
             axios.get(requestUrl)
                 .then(response => {
                     this.geojson = response.data.routes[0].geometry;
-                    this.geojsonVisible = true;
+                    this.geojsonVisible = showRoute;
                     this.emitRoute(response.data.routes[0], closest);
                 })
                 .finally(() => {
