@@ -9455,6 +9455,11 @@
   "resolved" "https://registry.npmjs.org/vue2-leaflet/-/vue2-leaflet-2.7.1.tgz"
   "version" "2.7.1"
 
+"vue2-smooth-scroll@^1.5.0":
+  "integrity" "sha512-/htFv6TiXmxnnqSw/oslDodfsZ41so1mFt9s4dXE80RBTcyZH8P1R9SHNvWx5C+FQQ6pbfQdimf3OuS5KnHvCw=="
+  "resolved" "https://registry.npmjs.org/vue2-smooth-scroll/-/vue2-smooth-scroll-1.5.0.tgz"
+  "version" "1.5.0"
+
 "w3c-hr-time@^1.0.1":
   "integrity" "sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ=="
   "resolved" "https://registry.npmjs.org/w3c-hr-time/-/w3c-hr-time-1.0.2.tgz"
