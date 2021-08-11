@@ -4,8 +4,10 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import 'leaflet/dist/leaflet.css';
 import Notifications from 'vue-notification';
+import VueSmoothScroll from 'vue2-smooth-scroll'
 
 Vue.use(Notifications);
+Vue.use(VueSmoothScroll);
 
 // eslint-disable-next-line
 delete L.Icon.Default.prototype._getIconUrl;

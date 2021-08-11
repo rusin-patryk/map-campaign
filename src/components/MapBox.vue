@@ -21,7 +21,7 @@
 
             <LocationPicker :locations="locations" @pickLocation="centerOnLocation" @close="closePicker" />
         </div>
-        <div class="map" id="map-anchor" @touchstart="onTwoFingerDrag" @touchend="onTwoFingerDrag">
+        <div class="map" ref="map-anchor" id="map-anchor" :class="{'map-center': !token && !error}" @touchstart="onTwoFingerDrag" @touchend="onTwoFingerDrag">
             <div v-if="!token && !error" class="lds-ring">
                 <div></div>
                 <div></div>
@@ -276,6 +276,10 @@ export default {
                 .finally(() => {
                     setTimeout(() => {
                         window.location.href = '#map-anchor';
+                        this.$smoothScroll({
+                            scrollTo: this.$refs['map-anchor'],
+                            hash: '#map-anchor'
+                        })
                     }, 100);
                 });
         },
