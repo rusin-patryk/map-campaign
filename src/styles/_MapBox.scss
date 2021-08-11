@@ -100,6 +100,10 @@
     z-index: 10;
     padding-top: 10px;
 
+    &.map-center {
+      align-items: center;
+    }
+
     &.swiping::after {
       content: 'Użyj dwóch palców do przesuwania mapy';
       text-transform: none;
