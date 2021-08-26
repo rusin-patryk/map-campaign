@@ -28,7 +28,7 @@ $public = DEV_CAPTCHA_PUBLIC;
 $secret = DEV_CAPTCHA_SECRET;
 $mapbox_token = DEV_MAPBOX_TOKEN;
 
-if (strpos($url, '//dev') === false && strpos($url, '//stagging') === false) {
+if (strpos($url, '//dev') == false && strpos($url, '//stagging') == false) {
     $public = CAPTCHA_PUBLIC;
     $secret = CAPTCHA_SECRET;
     $mapbox_token = MAPBOX_TOKEN;
