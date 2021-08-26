@@ -278,7 +278,6 @@ export default {
                         window.location.href = '#map-anchor';
                         this.$smoothScroll({
                             scrollTo: this.$refs['map-anchor'],
-                            hash: '#map-anchor'
                         })
                     }, 100);
                 });
