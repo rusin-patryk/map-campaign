@@ -2,7 +2,7 @@
 
 ## About project
 
-This is page for campaigns focused on the closest things searched by user location. You can test it on: [stagging.oddajubrania.pl](), Access to page: L:oddajubrania P:stagging.
+This is page for campaigns focused on the closest things searched by user location. You can test it on: [stagging.oddajubrania.pl](https://stagging.oddajubrania.pl/), Access to page: L:oddajubrania P:stagging.
 
 You can run this project on http server with PHP (for local run use fe. xampp). Alternatively you can mock ReCaptcha & Mapbox responses from captcha.php.
 
